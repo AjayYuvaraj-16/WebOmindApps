@@ -13,8 +13,8 @@ export default function Home() {
 
       <div className='flex flex-col items-center justify-center'>
         <DualDirectionCarousel />
-      </div>
     <StackedCards/>
+      </div>
 
     </React.Fragment>
   );

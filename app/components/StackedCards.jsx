@@ -4,15 +4,47 @@ import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import CardAnimationSection from './CardAnimationSection';
-import Image from 'next/image';
+
 
 
 const StackedCards = () => {
-
+  const bannerTextRef = useRef(null);
   const cardsRef = useRef([]);
   const containerRef = useRef(null);
   gsap.registerPlugin(ScrollTrigger);
   const [movedCardIndex, setMovedCardIndex] = useState(null);
+  
+
+  const animationSectionData = [
+    { id: 1, src: '/images/qr-image.webp', title:"Online Payments",subTitle:"Online payments,minus the friction",text:"Collect online payments,make payouts,onboard customers and offer embedded finance solutions through an intutive dashboard qnd easy-to-integrate API's",buttonText:"Make Payments"},
+    
+  ]
+
+
+  useEffect(() => {
+
+     gsap.fromTo(
+      bannerTextRef.current,
+      {
+        x: -5000,  
+        opacity: 0,  
+      },
+      {
+        x: 0,  
+        opacity: 1,  
+        duration: 5,  
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: bannerTextRef.current,
+          start: 'top 80%',  
+          end: 'top 50%',  
+          scrub: 7
+        },
+      }
+    );
+  }
+
+  ,[]);
 
   useEffect(() => {
     const containerWidth = containerRef.current.offsetWidth; 
@@ -20,6 +52,7 @@ const StackedCards = () => {
     const cardWidth = 400; 
     const totalSpacing = containerWidth - cardWidth; 
     const xOffset = totalSpacing / (totalCards - 1); 
+
 
     const updateStackPositions = () => { 
 
@@ -37,36 +70,32 @@ const StackedCards = () => {
         y: (i) => parseFloat(remainingCards[i].dataset.yOffset || 0),
         opacity: 1,
         zIndex:1,
-        duration: 0.7,
+        duration: 5,
         stagger: 0.2,
-        ease: "power2.out",
+        scrollTrigger: {
+                 trigger: containerRef.current,
+                start: 'top 80%',  
+                end: 'top 50%',  
+                scrub: 7
+              },
+        ease: 'power2.out',
       });
-
-      // gsap.to(cardsRef.current, {
-      //   rotateY:(i) => (cardsRef.current[i]?.dataset.hasMoved === 'true' ? null: 15),
-      //   rotate:(i) => (cardsRef.current[i]?.dataset.hasMoved === 'true' ? null: 2),
-      //   x: (i) => (cardsRef.current[i]?.dataset.hasMoved === 'true' ? null : parseFloat(cardsRef.current[i]?.dataset.xOffset || 0)),
-      //   y: (i) =>(cardsRef.current[i]?.dataset.hasMoved === 'true' ? null : parseFloat(cardsRef.current[i]?.dataset.yOffset || 0)),      
-      //   opacity: 1,
-      //   duration: 0.7,
-      //   stagger: 0.2,
-      //   ease: "power2.out",
-      // });
 
     }
 
     updateStackPositions();
 
+    const timeout = setTimeout(() => {
+
     const cardToMoveIndex = 3;
     const cardToMove = cardsRef.current[cardToMoveIndex];
     const nextSection = document.querySelector("#next-section");
-console.log(cardToMove,">>CArdToMove")
 
     if (cardToMove && nextSection) {
       ScrollTrigger.create({
         trigger: nextSection,
-        start: "top center",
-        end: "bottom 20%",
+        start: "top 80%", 
+        end: "bottom 50%",
         duration: 1.5,
         once:true,
         ease: 'power1.inOut',
@@ -110,80 +139,72 @@ console.log(cardToMove,">>CArdToMove")
               stagger: 0,
               scale:1,
               zIndex:1
-            });
-
-                gsap.to(cardToMove.querySelector('.text'),{
-                  
-                  opacity: 0,
-                  duration: 2,
-                  ease: 'power2.out',
-                  color:"#000",
-                  display:"block",
-                  onComplete:()=>{
-                    const appendEle = document.querySelector("#cutom-append");
-                    if (appendEle) {
-                      appendEle.appendChild(cardToMove.querySelector('.text'));
-                    } else {
-                      console.error("Element with ID 'cutom-append' not found.");
-                    }
-                  }
-                });       
+            });    
 
               updateStackPositions();
 
-              setTimeout(() => {
+              
 
                 const replaceImage = "/images/payment.webp";
 
-                const newText = 'This is the new text for the moved card.';
 
-                gsap.to( cardToMove, {
+
+                gsap.to([cardToMove,'#innerTittle', '#innerSubTittle', '#innerText', '#AnimateCardButton'], {
                   duration: 2,
                   ease: "power2.out",
+                  delay:2,
+                  opacity: 0,
+                  y: 100,
+                  color:"#000",
                   onComplete:()=>{
-                    const imgElement = document.createElement('img');
-                    imgElement.src = replaceImage;
-                    imgElement.alt = "Replaced Card Image";
-                    imgElement.style.height = "100%";
-                    imgElement.style.objectFit = "cover";
-                    imgElement.style.borderRadius = "0.5rem";
-                    imgElement.className = "replaced-card-image";
 
 
-                    cardToMove.innerHTML = "" ;
-                    // cardToMove.appendChild(imgElement); 
-              
-                    cardToMove.parentNode.replaceChild(imgElement, cardToMove);
+                                const imgElement = document.createElement('img');
+                                imgElement.src = replaceImage;
+                                imgElement.alt = "Replaced Card Image";
+                                imgElement.style.height = "100%";
+                                imgElement.style.objectFit = "cover";
+                                imgElement.style.borderRadius = "0.5rem";
+                                imgElement.className = "replaced-card-image";
 
-                    const textElement = document.createElement('p');
-                    textElement.textContent = newText;
-                    textElement.style.bottom = "10px";
-                    textElement.style.left = "10px";
-                    textElement.style.color = "#000";
-                    textElement.style.padding = "5px 10px";
-                    textElement.style.borderRadius = "0.5rem";
-                    textElement.style.fontSize = "1rem";
-                    textElement.style.zIndex = "2";
 
-                    const appendTarget = document.querySelector("#cutom-append");
-                   
-                    if (appendTarget) {
-                      appendTarget.appendChild(textElement);
-                    } else {
-                      console.error("Element with ID 'cutom-append' not found.");
-                    }
+                                   cardToMove.innerHTML = "" ;
+
+
+                                    cardToMove.parentNode.replaceChild(imgElement, cardToMove);
+
+                                        animationSectionData?.map((data) => {
+                                          const titleElement = document.getElementById('innerTittle');
+                                          titleElement.textContent = data.title;
+                                        
+                                          const subTitleElement = document.getElementById('innerSubTittle');
+                                          subTitleElement.textContent = data.subTitle;
+                                        
+                                          const textElement = document.getElementById('innerText');
+                                          textElement.textContent = data.text;
+                                        
+                                          const buttonTextElement = document.getElementById('AnimateCardButton');
+                                          buttonTextElement.textContent = data.buttonText; 
+                                        
+                                          buttonTextElement.onclick = () => {
+                                            console.log("Button clicked!");
+                                          };
+                                          gsap.fromTo(
+                                            [imgElement, '#innerTittle', '#innerSubTittle', '#innerText', '#AnimateCardButton'],
+                                            { opacity: 0,y:250,duration:3,delay:2, ease: "power2.out" },
+                                            {y:0,opacity: 1, duration: 3, ease: "power2.out" }
+                                          );
+
+                                        });
+                                        
+                                        
                     
-              
-                    gsap.fromTo(
-                      [imgElement, textElement],
-                      { opacity: 0,y:250,duration:2, ease: "power2.out" },
-                      {y:0,opacity: 1, duration: 1, ease: "power2.out" }
-                    );
+
+                   
 
                   }
                 }
                 )
-              },2000)
               
             },
           });
@@ -192,6 +213,9 @@ console.log(cardToMove,">>CArdToMove")
       
       
     }
+    }, 1000);
+    ScrollTrigger.refresh();
+    return () => clearTimeout(timeout);
 
   }, []);
 
@@ -199,7 +223,6 @@ console.log(cardToMove,">>CArdToMove")
     const hoveredCard = cardsRef.current[index];
 
     if (hoveredCard && hoveredCard.dataset.hasMoved === "true") return;
-      // Animate the hovered card
       if (hoveredCard) {
       gsap.to(hoveredCard, {
         rotate: 0,
@@ -267,18 +290,24 @@ if (hoveredCard && hoveredCard.dataset.hasMoved === "true") return;
   };
 
   const cards = [
-    { id: 1, src: '/images/payment.webp', color: '#f0f0f0',text:"Collect online payments, make payouts, onboard customers, and offer embedded finance solutions through an intuitive dashboard and easy-to-integrate APIs." },
-    { id: 2, src: '/images/qr-image.webp', color: '#e0f7fa',text:"Collect online payments, make payouts, onboard customers, and offer embedded finance solutions through an intuitive dashboard" },
-    { id: 3, src: '/images/payment.webp', color: '#c8e6c9',text:"Collect online payments, make payouts, onboard customers, and offer embedded finance solutions" },
-    { id: 4, src: '/images/qr-image.webp', color: '#ffe0b2',text:"Collect online payments, make payouts, onboard customers, and offer Ajay" },
-    { id: 5, src: '/images/payment.webp', color: '#ffccbc',text:"Collect online payments, make payouts, onboard customers" },
-    { id: 6, src: '/images/qr-image.webp', color: '#d1c4e9',text:"Collect online payments, make payouts, onboard customers, and offer embedded finance solutions through an intuitive dashboard and easy-to-integrate APIs." },
-    { id: 7, src: '/images/payment.webp', color: '#ffcc80',text:"Collect online payments, make payouts, onboard customers, and offer embedded finance solutions through an intuitive dashboard and easy-to-integrate APIs." },
+    { id: 1, src: '/images/payment.webp', },
+    { id: 2, src: '/images/qr-image.webp'},
+    { id: 3, src: '/images/payment.webp'},
+    { id: 4, src: '/images/qr-image.webp'},
+    { id: 5, src: '/images/payment.webp'},
+    { id: 6, src: '/images/qr-image.webp'},
+    { id: 7, src: '/images/payment.webp'}
   ];
 
+
+
+
   return (
-    <div>
-    <div className="relative w-full h-[700px] flex justify-end items-center px-8" ref={containerRef}>
+    <div className='my-10 container'>
+        <div className="font-bold text-7xl w-2/5 text-black" ref={bannerTextRef}>
+        Commerce,<span className="font-bold text-7xl  text-black block">made complelling</span>
+      </div>
+    <div className="relative w-full h-[600px] flex justify-end items-center px-8" ref={containerRef}>
       {cards.map((card, index) => (
         <div
           key={card.id}
@@ -296,7 +325,7 @@ if (hoveredCard && hoveredCard.dataset.hasMoved === "true") return;
         </div>
       ))}
     </div>
-    <CardAnimationSection/>
+    <CardAnimationSection animateData={animationSectionData} />
 </div>
   );
 };

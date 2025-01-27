@@ -1,29 +1,77 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useRef,useEffect } from "react";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-
-// Import Swiper styles
 import "swiper/css";
 
-import { Autoplay } from "swiper/modules";
-
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 const DualDirectionCarousel = () => {
+  const bannerTextRef = useRef(null);
+  const contentRef = useRef(null);
+
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    gsap.fromTo(
+      bannerTextRef.current,
+      {
+        x: -5000,  
+        opacity: 0,  
+      },
+      {
+        x: 0,  
+        opacity: 1,  
+        duration: 5,  
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: bannerTextRef.current,
+          start: 'top 80%',  
+          end: 'top 50%',  
+          scrub: 7
+        },
+      }
+    );
+
+    gsap.fromTo(
+      contentRef.current,
+      {
+        x: 5000,  
+        opacity: 0,  
+      },
+      {
+        x: 0,  
+        opacity: 1,  
+        duration: 5,  
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: contentRef.current,
+          start: 'top 80%',  
+          end: 'top 50%',  
+          scrub: 7
+        },
+      }
+    );
+  }, []);
+
+
+
   const topItems = [
-    { id: 1, image: "/api/placeholder/200/150", title: "Item 1" },
-    { id: 2, image: "/api/placeholder/200/150", title: "Item 2" },
-    { id: 3, image: "/api/placeholder/200/150", title: "Item 3" },
-    { id: 4, image: "/api/placeholder/200/150", title: "Item 4" },
-    { id: 5, image: "/api/placeholder/200/150", title: "Item 5" },
+    { id: 1},
+    { id: 2},
+    { id: 3},
+    { id: 4},
+    { id: 5}
   ];
 
   const bottomItems = [
-    { id: 6, image: "/api/placeholder/200/150", title: "Item 6" },
-    { id: 7, image: "/api/placeholder/200/150", title: "Item 7" },
-    { id: 8, image: "/api/placeholder/200/150", title: "Item 8" },
-    { id: 9, image: "/api/placeholder/200/150", title: "Item 9" },
-    { id: 10, image: "/api/placeholder/200/150", title: "Item 10" },
+    { id: 6},
+    { id: 7 },
+    { id: 8 },
+    { id: 9},
+    { id: 10}
   ];
 
   const topSwiperRef = useRef(null);
@@ -36,11 +84,11 @@ const DualDirectionCarousel = () => {
 
   return (
     <div className="my-10 container">
-      <div className="font-bold text-4xl w-2/5 text-black">
+      <div className="font-bold text-4xl w-2/5 text-black" ref={bannerTextRef}>
         Trusted by the best in business the world, we move money for brands,
         banks and fintechs alike.
       </div>
-      <div className="w-full max-w-2xl ml-auto p-4 relative">
+      <div className="w-full max-w-2xl ml-auto p-4 relative" ref={contentRef}>
         <div className="slider-container">
           <Swiper ref={topSwiperRef} slidesPerView={4} loop={true}>
             {topItems.map((item) => (
