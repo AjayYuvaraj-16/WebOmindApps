@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #000;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #ffffff;
+    --foreground: #000;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+.slider-container {
+  overflow: hidden;
+  mask-image: linear-gradient(to right, rgb(0, 0, 0, 0), rgb(0, 0, 0, 1) 20%, rgb(0, 0, 0, 1) 80%, rgb(0, 0, 0, 0));
+}
