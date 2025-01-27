@@ -121,7 +121,7 @@ const Banner = () => {
           ref={bannerImageRef}
           src="https://templatekit.jegtheme.com/digipay/wp-content/uploads/sites/385/2023/06/digipay-app-my-planning-ADPM2QY.png"
           alt="Banner"
-          className="w-[250] h-auto object-cover rounded-lg shadow-lg transform"
+          className="w-[250px] h-auto object-cover rounded-lg shadow-lg transform"
         />
       </div>
 
